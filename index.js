@@ -1,15 +1,29 @@
 const express = require("express");
-const { pair } = require("./pair");
+const { makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
+const pino = require("pino");
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.send("✅ WhatsApp Pair Server Running...");
+  res.send("WhatsApp Pair Server Running...");
 });
 
 app.get("/pair", async (req, res) => {
-  const code = await pair("main", "session");
-  res.send(`<h2>Pairing Code:</h2><pre>${code}</pre>`);
+  const { state, saveCreds } = await useMultiFileAuthState("./session");
+  const sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: false,
+    logger: pino({ level: "silent" })
+  });
+
+  if (!sock.authState.creds.registered) {
+    let code = await sock.requestPairingCode("947XXXXXXXX");
+    res.send(`<h1>Your Pairing Code: ${code}</h1>`);
+  } else {
+    res.send("Already paired!");
+  }
+
+  sock.ev.on("creds.update", saveCreds);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running on port", PORT));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
