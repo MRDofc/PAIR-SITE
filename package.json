@@ -4,18 +4,16 @@
   "description": "WhatsApp pairing system using Baileys",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "pm2:start": "pm2 start index.js --name wpairr --attach",
-    "pm2:stop": "pm2 stop wpairr",
-    "pm2:restart": "pm2 restart wpairr"
+    "start": "node index.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.21",
-    "express": "5.1.0",
-    "fs-extra": "^11.3.2",
-    "pino": "10:1:0"
+    "@whiskeysockets/baileys": "^6.7.8",
+    "express": "^4.19.2",
+    "fs-extra": "^11.2.0",
+    "pino": "^9.3.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
